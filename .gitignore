@@ -2,3 +2,6 @@
 .idea/
 # Node Modules
 modulo-1/node_modules/
+
+# TS files
+modulo-1/dist
