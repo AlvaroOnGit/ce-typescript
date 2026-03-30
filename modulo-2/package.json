@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "build": "npx tsc",
+    "dev": "npx tsx src/index.ts"
+  },
+  "type": "module",
+  "devDependencies": {
+    "typescript": "6.0.2"
+  }
+}
