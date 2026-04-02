@@ -77,6 +77,10 @@ export type EstadoMatricula =
 //  FUNCIÓN generarReporte
 // ============================================================
 
+function assertNever(value: never, message?: string): never {
+    throw new Error(message ?? `Estado de matrícula no contemplado: ${JSON.stringify(value)}`);
+}
+
 /**
  * Generates a descriptive string for the current enrolment state.
  *
@@ -85,7 +89,7 @@ export type EstadoMatricula =
  */
 export function generarReporte(state: EstadoMatricula): string {
     switch (state.type) {
-        case "ACTIVA":
+        case "ACTIVA": {
             const listaAsignaturas = state.subjects
                 .map((a) => `  - ${a.name} (${a.credits} créditos)`)
                 .join("\n");
@@ -95,8 +99,9 @@ export function generarReporte(state: EstadoMatricula): string {
                 `Inicio: ${state.startDate.toLocaleDateString("es-ES")}\n` +
                 `Asignaturas matriculadas (${state.subjects.length}):\n${listaAsignaturas}`
             );
+        }
 
-        case "SUSPENDIDA":
+        case "SUSPENDIDA": {
             const reincorporacion = state.expectedReincorporation
                 ? `\nReincorporación prevista: ${state.expectedReincorporation.toLocaleDateString("es-ES")}`
                 : "";
@@ -105,8 +110,9 @@ export function generarReporte(state: EstadoMatricula): string {
                 `Fecha de suspensión: ${state.suspensionDate.toLocaleDateString("es-ES")}\n` +
                 `Motivo: ${state.suspensionReason}` + reincorporacion
             );
+        }
 
-        case "FINALIZADA":
+        case "FINALIZADA": {
             const titulo = state.obtainedDegree
                 ? `\nTitulación: ${state.obtainedDegree}`
                 : "";
@@ -114,6 +120,13 @@ export function generarReporte(state: EstadoMatricula): string {
                 `MATRÍCULA FINALIZADA\n` +
                 `Fecha: ${state.endDate.toLocaleDateString("es-ES")}\n` +
                 `Nota media: ${state.gradeAverage.toFixed(2)} / 10` + titulo
+            );
+        }
+
+        default:
+            return assertNever(
+                state,
+                `generarReporte: tipo de matrícula desconocido recibido → ${JSON.stringify(state)}`
             );
     }
 }
